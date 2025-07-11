@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hydrosat.github.io/stac-extensions/hydrosat/0.1.1/schema.json#",
+  "title": "Hydrosat Extension",
+  "description": "Hydrosat STAC Extension for STAC Items and STAC Collections.",
+  "oneOf": [
+    {
+      "$comment": "This is the schema for STAC Items.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/stac_extensions"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "properties",
+            "assets"
+          ],
+          "properties": {
+            "type": {
+              "const": "Feature"
+            },
+            "properties": {
+              "allOf": [
+                {
+                  "$comment": "Require fields here for Item Properties.",
+                  "required": [
+                    "hydrosat:capture_id",
+                    "hydrosat:scene_id",
+                    "hydrosat:capture_type"
+                  ]
+                },
+                {
+                  "$ref": "#/definitions/fields"
+                }
+              ]
+            },
+            "assets": {
+              "$comment": "This validates the fields in Item Assets, but does not require them.",
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/fields"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "$comment": "This is the schema for STAC Collections.",
+      "type": "object",
+      "allOf": [
+        {
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "Collection"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/stac_extensions"
+        }
+      ],
+      "anyOf": [
+        {
+          "$comment": "This validates the fields in Collection Assets, but does not require them.",
+          "required": [
+            "assets"
+          ],
+          "properties": {
+            "assets": {
+              "type": "object",
+              "not": {
+                "additionalProperties": {
+                  "not": {
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/require_any_field"
+                      },
+                      {
+                        "$ref": "#/definitions/fields"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "This is the schema for the fields in Item Asset Definitions. It doesn't require any fields.",
+          "required": [
+            "item_assets"
+          ],
+          "properties": {
+            "item_assets": {
+              "type": "object",
+              "not": {
+                "additionalProperties": {
+                  "not": {
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/require_any_field"
+                      },
+                      {
+                        "$ref": "#/definitions/fields"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "This is the schema for the fields in Summaries. By default, only checks the existance of the properties, but not the schema of the summaries.",
+          "required": [
+            "summaries"
+          ],
+          "properties": {
+            "summaries": {
+              "$ref": "#/definitions/require_any_field"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "stac_extensions": {
+      "type": "object",
+      "required": [
+        "stac_extensions"
+      ],
+      "properties": {
+        "stac_extensions": {
+          "type": "array",
+          "contains": {
+            "const": "https://hydrosat.github.io/stac-extensions/hydrosat/0.1.1/schema.json"
+          }
+        }
+      }
+    },
+    "require_any_field": {
+      "$comment": "Please list all fields here so that we can force the existance of one of them in other parts of the schemas.",
+      "anyOf": [
+        {
+          "required": [
+            "hydrosat:capture_id"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:scene_id"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:capture_type"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:day_night"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:quality_check"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:quality_criteria"
+          ]
+        },
+        {
+          "required": [
+            "hydrosat:quality_log"
+          ]
+        }
+      ]
+    },
+    "fields": {
+      "$comment": "Add your new fields here. Don't require them here, do that above in the corresponding schema.",
+      "type": "object",
+      "properties": {
+        "hydrosat:capture_id": {
+          "title": "Capture ID",
+          "type": "string",
+          "description": "Unique identifier of the capture in the format AABB_YYYYMMDD_HHMMSS, where AA is the 2-letter spacecraft ID and BB is the 2-digit spacecraft number."
+        },
+        "hydrosat:scene_id": {
+          "title": "Scene id",
+          "type": "string",
+          "description": "Unique id of the scene"
+        },
+        "hydrosat:capture_type": {
+          "type": "string",
+          "title": "Data capture type",
+          "description": "Type of data captured. Regular image, blackbody calibration, deepspace collection, or lunar calibration",
+          "enum": [
+            "image",
+            "blackbody",
+            "deepspace",
+            "lunar"
+          ]
+        },
+        "hydrosat:day_night": {
+          "type": "string",
+          "title": "Day/night indicator",
+          "description": "For regular images, an indication whether the scene is collected during the day or the night.",
+          "enum": [
+            "day",
+            "night"
+          ]
+        },
+        "hydrosat:quality_check": {
+          "title": "Quality check",
+          "description": "Indication whether this item has been through quality checks and whether it passed or failed. A null value indicates unchecked. A boolean value indicates the result.",
+          "default": null,
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "hydrosat:quality_criteria": {
+          "type": "object",
+          "title": "Quality criteria",
+          "description": "Results from each individual quality criteria check.",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              }
+            ]
+          }
+        },
+        "hydrosat:quality_log": {
+          "type": "array",
+          "title": "Quality check log",
+          "description": "Details of quality checks performed on this item",
+          "items": {
+            "title": "Quality log entry",
+            "type": "object",
+            "required": [
+              "author",
+              "author_email",
+              "timestamp",
+              "notes"
+            ],
+            "properties": {
+              "author": {
+                "type": "string",
+                "title": "Author name"
+              },
+              "author_email": {
+                "title": "Author's email",
+                "type": "string",
+                "format": "email"
+              },
+              "timestamp": {
+                "title": "Log entry timestamp",
+                "type": "string",
+                "format": "date-time"
+              },
+              "notes": {
+                "title": "Log entry notes",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "patternProperties": {
+        "^(?!hydrosat:)": {
+          "$comment": "Ignore other properties"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
