@@ -192,7 +192,7 @@
         "hydrosat:capture_id": {
           "title": "Capture ID",
           "type": "string",
-          "description": "Unique identifier of the capture in the format AABB-YYYYMMDD-HHMMSS, where AA is the 2-letter spacecraft ID and BB is the 2-digit spacecraft number."
+          "description": "Unique identifier of the capture in the format AABB-YYYY-MM-DD-HHMMSS, where AA is the 2-letter spacecraft ID and BB is the 2-digit spacecraft number."
         },
         "hydrosat:scene_id": {
           "title": "Scene id",
