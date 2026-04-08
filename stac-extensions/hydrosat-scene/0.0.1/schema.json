@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hydrosat.github.io/stac-extensions/hydrosat-scene/0.0.1/schema.json#",
+  "title": "Hydrosat Extension",
+  "description": "Hydrosat STAC Extension for STAC Items.",
+  "oneOf": [
+    {
+      "$comment": "Schema defining the structure of Hydrosat STAC Items.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/stac_extensions"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "properties",
+            "assets"
+          ],
+          "properties": {
+            "type": {
+              "const": "Feature"
+            },
+            "properties": {
+              "allOf": [
+                {
+                  "required": [
+                    "hydrosat:strip_id",
+                    "hydrosat:scene_id",
+                    "hydrosat:day_night"
+                  ]
+                },
+                {
+                  "$ref": "#/definitions/fields"
+                }
+              ]
+            },
+            "assets": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/fields"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "stac_extensions": {
+      "type": "object",
+      "required": [
+        "stac_extensions"
+      ],
+      "properties": {
+        "stac_extensions": {
+          "type": "array",
+          "contains": {
+            "const": "https://hydrosat.github.io/stac-extensions/hydrosat-scene/0.0.1/schema.json"
+          }
+        }
+      }
+    },
+    "fields": {
+      "type": "object",
+      "properties": {
+        "hydrosat:strip_id": {
+          "title": "Strip ID",
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier of the strip from which the scene was captured."
+        },
+        "hydrosat:scene_id": {
+          "title": "Scene ID",
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier of the scene."
+        },
+        "hydrosat:day_night": {
+          "type": "string",
+          "title": "Day/Night Indicator",
+          "description": "Indicates whether the scene is collected during the day or night.",
+          "enum": [
+            "day",
+            "night"
+          ]
+        }
+      },
+      "patternProperties": {
+        "^(?!hydrosat:)": {
+          "$comment": "Permits additional properties not prefixed with 'hydrosat:' without validation."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
