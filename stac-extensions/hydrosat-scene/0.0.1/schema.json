@@ -84,6 +84,21 @@
             "day",
             "night"
           ]
+        },
+        "hydrosat:radiometric_scaling.radiance_to_reflectance_scaling": {
+          "title": "Radiance to Reflectance Scaling",
+          "description": "Scaling factor to convert radiance to reflectance for the asset band.",
+          "type": "number"
+        },
+        "hydrosat:brightness_temperature_coefficients.K1_constant": {
+          "title": "Brightness Temperature K1 Constant",
+          "description": "Thermal calibration K1 constant for converting radiance to brightness temperature.",
+          "type": "number"
+        },
+        "hydrosat:brightness_temperature_coefficients.K2_constant": {
+          "title": "Brightness Temperature K2 Constant",
+          "description": "Thermal calibration K2 constant for converting radiance to brightness temperature.",
+          "type": "number"
         }
       },
       "patternProperties": {
