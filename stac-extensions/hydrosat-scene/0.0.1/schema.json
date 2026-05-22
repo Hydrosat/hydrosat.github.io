@@ -90,6 +90,11 @@
           "description": "Scaling factor to convert radiance to reflectance for the asset band.",
           "type": "number"
         },
+        "hydrosat:radiometric_scaling.reflectance_to_radiance_scaling": {
+          "title": "Reflectance to Radiance Scaling",
+          "description": "Scaling factor to convert reflectance to radiance for the asset band.",
+          "type": "number"
+        },
         "hydrosat:brightness_temperature_coefficients.K1_constant": {
           "title": "Brightness Temperature K1 Constant",
           "description": "Thermal calibration K1 constant for converting radiance to brightness temperature.",
